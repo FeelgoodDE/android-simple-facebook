@@ -1,15 +1,15 @@
 apply plugin: 'android-library'
 
 dependencies {
-    compile project(':facebook-android-sdk:facebook')
+    compile 'com.facebook.android:facebook-android-sdk:3.21.0'
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 19
     }
 
