@@ -2,11 +2,13 @@ package com.sromku.simple.fb.entities;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import android.os.Bundle;
 
 import com.facebook.model.GraphObject;
+import com.sromku.simple.fb.utils.Attributes;
 import com.sromku.simple.fb.utils.Utils;
 
 /**
@@ -27,6 +29,7 @@ public class Page {
 	private Integer mNumCheckins;
 	private String mCompanyOverview;
 	private String mCover;
+	private Long mCreatedTime;
 	private String mCurrentLocation;
 	private String mDescription;
 	private String mDirectedBy;
@@ -44,6 +47,7 @@ public class Page {
 	private String mMission;
 	private String mName;
 	private Parking mParking;
+	private String mPicture;
 	private String mPhone;
 	private String mPressContact;
 	private String mPriceRange;
@@ -81,6 +85,9 @@ public class Page {
 
 		// category
 		mCategory = Utils.getPropertyString(graphObject, Properties.CATEGORY);
+		
+		// create time
+		mCreatedTime = Utils.getPropertyLong(graphObject, Properties.CREATED_TIME);
 
 		// num checkins
 		mNumCheckins = Utils.getPropertyInteger(graphObject, Properties.CHECKINS);
@@ -142,6 +149,10 @@ public class Page {
 		// parking
 		GraphObject parking = Utils.getPropertyGraphObject(graphObject, Properties.PARKING);
 		mParking = Parking.create(parking);
+
+		// picture
+		GraphObject data = Utils.getPropertyGraphObject(mGraphObject, Properties.PICTURE);
+		mPicture = Utils.getPropertyInsideProperty(data, "data", "url");
 
 		// phone
 		mPhone = Utils.getPropertyString(graphObject, Properties.PHONE);
@@ -255,6 +266,14 @@ public class Page {
 	 */
 	public String getCategory() {
 		return mCategory;
+	}
+	
+	/**
+	 * Relevant to Book. <br>
+	 * A timestamp indicating when the book was added to the person's profile.
+	 */
+	public Long getCreatedTime() {
+		return mCreatedTime;
 	}
 
 	/**
@@ -449,6 +468,13 @@ public class Page {
 	}
 
 	/**
+	 * The page 'profile' picture
+	 */
+	public String getPicture() {
+		return mPicture;
+	}
+	
+	/**
 	 * Phone number provided by a Page
 	 * 
 	 * @return
@@ -546,7 +572,7 @@ public class Page {
 		private Properties(Builder builder) {
 			mBundle = new Bundle();
 			Iterator<String> iterator = builder.properties.iterator();
-			String fields = Utils.join(iterator, ',');
+			String fields = Utils.join(iterator, ",");
 			mBundle.putString("fields", fields);
 		}
 
@@ -616,6 +642,12 @@ public class Page {
 		 * URL to the Photo that represents this cover photo.
 		 */
 		public static final String COVER = "cover";
+		
+		/**
+		 * Relevant to Book. <br>
+		 * A timestamp indicating when the book was added to the person's profile.
+		 */
+		public static final String CREATED_TIME = "created_time";
 
 		/**
 		 * Current location of the Page
@@ -712,6 +744,8 @@ public class Page {
 		 */
 		public static final String PARKING = "parking";
 
+		public static final String PICTURE = "picture";
+		
 		/**
 		 * Phone number provided by a Page
 		 */
@@ -780,6 +814,27 @@ public class Page {
 			 */
 			public Builder add(String property) {
 				properties.add(property);
+				return this;
+			}
+			
+			/**
+			 * Add property and attribute you need
+			 * 
+			 * @param property
+			 *            The property of the page<br>
+			 *            For example: {@link Properties#PICTURE}
+			 * @param attributes
+			 *            For example: picture can have type,width and height<br>
+			 * 
+			 * @return {@link Builder}
+			 */
+			public Builder add(String property, Attributes attributes) {
+				Map<String, String> map = attributes.getAttributes();
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append(property);
+				stringBuilder.append('.');
+				stringBuilder.append(Utils.join(map, '.', '(', ')'));
+				properties.add(stringBuilder.toString());
 				return this;
 			}
 

@@ -33,3 +33,13 @@ proguard-project.txt
 # Other
 .DS_Store
 tmp
+=======
+*.class
+*.sh
+.settings/
+.classpath
+build/
+
+*.orig
+
+.gradle/

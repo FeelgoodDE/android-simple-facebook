@@ -6,30 +6,30 @@ import java.util.List;
 import com.facebook.Response;
 import com.facebook.model.GraphObject;
 import com.sromku.simple.fb.SessionManager;
-import com.sromku.simple.fb.entities.Checkin;
+import com.sromku.simple.fb.entities.Account;
 import com.sromku.simple.fb.utils.GraphPath;
 import com.sromku.simple.fb.utils.Utils;
 
-public class GetCheckinsAction extends GetAction<List<Checkin>> {
+public class GetAccountsAction extends GetAction<List<Account>> {
 
-	public GetCheckinsAction(SessionManager sessionManager) {
+	public GetAccountsAction(SessionManager sessionManager) {
 		super(sessionManager);
 	}
 
 	@Override
 	protected String getGraphPath() {
-		return String.format("%s/%s", getTarget(), GraphPath.CHECKINS);
+		return getTarget() + "/" + GraphPath.ACCOUNTS;
 	}
 
 	@Override
-	protected List<Checkin> processResponse(Response response) {
+	protected List<Account> processResponse(Response response) {
 		List<GraphObject> graphObjects = Utils.typedListFromResponse(response, GraphObject.class);
-		List<Checkin> checkins = new ArrayList<Checkin>(graphObjects.size());
+		List<Account> groups = new ArrayList<Account>(graphObjects.size());
 		for (GraphObject graphObject : graphObjects) {
-			Checkin checkin = Checkin.create(graphObject);
-			checkins.add(checkin);
+			Account group = Account.create(graphObject);
+			groups.add(group);
 		}
-		return checkins;
+		return groups;
 	}
 
 }
